@@ -1,0 +1,27 @@
+{
+  "name": "zenko-sse",
+  "version": "1.0.0",
+  "description": "Zenko Server Side Encryption",
+  "main": "index.js",
+  "repository": "git@github.com:scality/zenko-sse.git",
+  "author": "Scality Inc.",
+  "license": "Apache-2.0",
+  "private": false,
+  "dependencies": {
+    "arsenal": "github:scality/arsenal#development/8.1",
+    "async": "^3.0.1",
+    "werelogs": "github:scality/werelogs"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-scality": "github:scality/Guidelines#1d6f287b",
+    "eslint-plugin-import": "^2.17.3",
+    "eslint-plugin-jest": "^22.7.0",
+    "jest": "^24.8.0"
+  },
+  "scripts": {
+    "test:lint": "yarn eslint $(git ls-files -- '*.js')",
+    "test:unit": "yarn jest --verbose --maxConcurrency=1 --logHeapUsage --projects jest.config.js --coverage --testPathPattern='tests/unit/[\\w/-]+\\.[tj]s'"
+  }
+}
