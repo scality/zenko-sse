@@ -1,0 +1,51 @@
+---
+version: "0.2"
+
+branches:
+  documentation/*, feature/*, improvement/*, bugfix/*, w/*, q/*, hotfix/*:
+    stage: pre-merge
+
+models:
+  - Git: &git_pull
+      name: git pull
+      repourl: "%(prop:git_reference)s"
+      mode: full
+      method: clobber
+      retryFetch: true
+      haltOnFailure: true
+  - ShellCommand: &install_deps
+      name: Install dependencies
+      command: yarn install --frozen-lockfile
+  - worker: &docker_worker
+      type: docker
+      path: eve/workers/runner
+      volumes:
+        - '/home/eve/workspace'
+stages:
+  pre-merge:
+    worker:
+      type: local
+    steps:
+      - TriggerStages:
+          name: Start test stages in parallel
+          stage_names:
+            - lint
+            - unit
+
+  lint:
+    worker: *docker_worker
+    steps:
+      - Git: *git_pull
+      - ShellCommand: *install_deps
+      - ShellCommand:
+          name: Run linter
+          command: yarn run test:lint
+
+  unit:
+    worker: *docker_worker
+    steps:
+      - Git: *git_pull
+      - ShellCommand: *install_deps
+      - ShellCommand:
+          name: Run unit tests
+          command: yarn run test:unit
